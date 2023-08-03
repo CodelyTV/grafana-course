@@ -15,7 +15,7 @@ etc.) for every lesson that required a specific set up of Grafana and any of the
 *NOTE: Not all the course lessons contain practical examples that can be reproduced locally, but some are an overview
 of some theoretical concepts and some just use an external instance, like [play.grafana.org](https://play.grafana.org/).*
 
-### Index
+**Index**
 
 1. 🚀 Descubre todo el potencial de Grafana
 
@@ -38,3 +38,6 @@ of some theoretical concepts and some just use an external instance, like [play.
    [3.2. 🪬 Observabilidad para monitorear Loki](./3-fullstack-e2e-web-shop-o11y)
 
    [3.3. 🦬 Observabilidad para monitorear Prometheus](./3-fullstack-e2e-web-shop-o11y)
+
+*NOTE: Some of the examples present on this repository are attached as Git Submodules, so you can run
+`git submodule init` and `git submodule update` to clone the entire repository with them.*
