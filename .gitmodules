@@ -1,3 +1,0 @@
-[submodule "web-shop-o11y-demo"]
-	path = 3-fullstack-e2e-web-shop-o11y/web-shop-o11y-demo
-	url = git@github.com:Condla/web-shop-o11y-demo.git

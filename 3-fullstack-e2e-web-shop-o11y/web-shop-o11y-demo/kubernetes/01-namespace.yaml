@@ -1,7 +1,0 @@
----
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: web-shop-app
-  labels:
-    name: web-shop-app
