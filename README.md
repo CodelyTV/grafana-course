@@ -14,3 +14,15 @@ etc.) for every lesson that required a specific set up of Grafana and any of the
 
 *NOTE: Not all the course lessons contain practical examples that can be reproduced locally, but some are an overview
 of some theoretical concepts and some just use an external instance, like [play.grafana.org](https://play.grafana.org/).*
+
+### Index
+
+1. 🚀 Descubre todo el potencial de Grafana
+
+    1.1. ⚡️ Grafana en menos de 10 minutos: Explicado!
+
+    1.2. 🖲️ Funcionalidades de Grafana que has de conocer
+
+2. 🛠️ Crea tu Dashboard de desarrollo
+
+   [2.1. 📊 Crea tu primer panel: Data sources e integración con GitHub](./2-1-your-first-panel)

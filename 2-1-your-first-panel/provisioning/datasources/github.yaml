@@ -1,0 +1,10 @@
+apiVersion: 1
+
+datasources:
+  - name: GitHub
+    uid: JOMY3IQ4z
+    type: grafana-github-datasource
+    isDefault: true
+    editable: true
+    secureJsonData:
+      accessToken: $GITHUB_ACCESS_TOKEN

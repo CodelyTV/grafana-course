@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  grafana:
+    image: grafana/grafana:10.0.1
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=codely
+      - GF_INSTALL_PLUGINS=grafana-github-datasource
+      - GITHUB_ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
+    volumes:
+      - ./provisioning:/etc/grafana/provisioning
