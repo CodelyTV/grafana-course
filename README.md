@@ -25,4 +25,8 @@ of some theoretical concepts and some just use an external instance, like [play.
 
 2. 🛠️ Crea tu Dashboard de desarrollo
 
-   [2.1. 📊 Crea tu primer panel: Data sources e integración con GitHub](./2-1-your-first-panel)
+   [2.1. 📊 Crea tu primer panel: Data sources e integración con GitHub](./2-your-dashboard-for-development)
+
+   [2.2. 👌 Mejora el panel aplicando buenas prácticas](./2-your-dashboard-for-development)
+
+   [2.3. ♠️ Utiliza los paneles de tu data source](./2-your-dashboard-for-development)
