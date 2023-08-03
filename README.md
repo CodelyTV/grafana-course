@@ -30,3 +30,11 @@ of some theoretical concepts and some just use an external instance, like [play.
    [2.2. 👌 Mejora el panel aplicando buenas prácticas](./2-your-dashboard-for-development)
 
    [2.3. ♠️ Utiliza los paneles de tu data source](./2-your-dashboard-for-development)
+
+3. 👁️‍🗨️ Monitoriza tu aplicación utilizando Prometheus y Loki
+
+   [3.1. 👀 Monitoriza una aplicación fullstack: Frontend & Backend](./3-fullstack-e2e-web-shop-o11y)
+
+   [3.2. 🪬 Observabilidad para monitorear Loki](./3-fullstack-e2e-web-shop-o11y)
+
+   [3.3. 🦬 Observabilidad para monitorear Prometheus](./3-fullstack-e2e-web-shop-o11y)

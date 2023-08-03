@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+      <h1 class="w3-jumbo w3-hide-small">Welcome {{person}}</h1>
+      <h1 class="w3-hide-large w3-hide-medium">Welcome {{person}}</h1>
+      <h1 class="w3-hide-small"></h1>
+{% endblock %}
+{% block titlebutton %}<a href="/shop?name={{person}}#cats" class="w3-button w3-black w3-padding-large w3-large">SHOP NOW</a>{% endblock %}
+
+
+{% block content %}
+  <div class="w3-container w3-text-grey" id="cats">
+    <p>{{ products|length }} items</p>
+  </div>
+
+  <!-- Product grid -->
+  <div class="w3-row w3-grayscale">
+  
+    
+
+{% for product in products %}
+    <div class="w3-col l3 s6">
+      <div class="w3-container">
+        <div class="w3-display-container">
+          <img src="{{product.pic_ref}}" style="width:100%">
+          <span class="w3-tag w3-display-topleft">{{product["tag"]}}</span>
+          <div class="w3-display-middle w3-display-hover">
+            <button onclick='buy_now("{{ product.name}}", "{{ person }}")' type="submit" name="product" value="{{product.name}}" class="w3-button w3-black">Buy now <i class="fa fa-shopping-cart"></i></button>
+          </form>
+          </div>
+        </div>
+        <p>{{ product.name }}<br><b>{{product.price}}</b></p>
+      </div>
+    </div>
+{% endfor %}
+  </div>
+
+{% endblock %}

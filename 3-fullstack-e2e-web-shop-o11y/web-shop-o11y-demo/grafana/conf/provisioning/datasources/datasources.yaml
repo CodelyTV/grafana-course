@@ -1,0 +1,71 @@
+apiVersion: 1
+
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    uid: loki
+    url: http://loki:3100
+    jsonData:
+      derivedFields:
+        - datasourceUid: tempo
+          matcherRegex: "^.*?trace_*[I|i][d|D]=(\\w+).*$"
+          name: traceId
+          url: '$${__value.raw}'
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    uid: tempo
+    url: http://tempo:3200
+    jsonData:
+      nodeGraph:
+        enabled: true
+      tracesToLogs:
+        datasourceUid: loki
+        filterByTraceID: false
+        spanEndTimeShift: "500ms"
+        spanStartTimeShift: "-500ms"
+        tags: ['service']
+        mappedTags: [{key: 'service.name', value: 'service'}]
+        mapTagNamesEnabled: true
+      serviceMap:
+        datasourceUid: prometheus
+
+      tracesToMetrics:
+        datasourceUid: 'prometheus'
+        tags: [{key: 'service.name', value: 'service_name'}]
+        queries:
+          - name: 'Requests Rate'
+            query: 'sum(rate(traces_spanmetrics_calls_total{$__tags}[1m]))'
+          - name: 'p90 latency'
+            query: 'histogram_quantile(0.9, sum(rate(traces_spanmetrics_calls_total{$__tags}[1m]))'
+
+  - name: Mimir
+    type: prometheus
+    access: proxy
+    uid: prometheus
+    url: http://mimir:9009/prometheus
+    jsonData:
+      exemplarTraceIdDestinations:
+        - datasourceUid: tempo
+          name: traceId
+      httpMethod: POST
+
+  - name: Phlare
+    type: phlare
+    access: proxy
+    uid: phlare
+    url: http://phlare:4100
+
+  - name: MySQL
+    type: mysql
+    url: mariadb:3306
+    database: webshopdb
+    user: root
+    jsonData:
+      maxOpenConns: 0
+      maxIdleConns: 2
+      connMaxLifetime: 14400
+    secureJsonData:
+      password: myrootpassword

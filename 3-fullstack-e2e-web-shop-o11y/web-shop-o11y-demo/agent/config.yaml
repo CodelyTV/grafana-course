@@ -1,0 +1,171 @@
+server:
+  log_level: debug
+
+
+integrations:
+  metrics:
+    autoscrape:
+      enable: true
+      metrics_instance: mimir
+
+  agent:
+    # The Agent dashboards are written to assume Kubernetes, so we inject some
+    # fake Kubernetes labels here.
+    extra_labels:
+      cluster: docker-compose
+      namespace: docker-compose
+      container: grafana-agent
+      pod: grafana-agent-${HOSTNAME:-example}
+
+  app_agent_receiver_configs:
+      - autoscrape:
+          enable: true
+          metrics_instance: 'mimir'
+        instance: 'frontend'
+        logs_instance: 'loki'
+        traces_instance: 'tempo'
+        server:
+          host: 0.0.0.0
+          port: 12347
+          cors_allowed_origins:
+            - ${APP_ENDPOINT}
+          api_key: 'secret' # optional, if set, client will be required to provide it via x-api-key header
+        logs_labels: # labels to add to loki log record
+          app: 'web-shop-frontend' # static value
+          kind: # value will be taken from log items. exception, log, measurement, etc
+        logs_send_timeout: 5000
+        sourcemaps:
+          download: true # will download source file, extract source map location,
+
+metrics:
+  wal_directory: /var/lib/agent/wal
+  global:
+    scrape_interval: 15s
+    external_labels:
+      cluster: web-shop
+  configs:
+  - name: mimir
+    remote_write:
+    - url: http://mimir:9009/api/v1/push
+    scrape_configs:
+    - job_name: 'backends'
+
+      # Override the global default and scrape targets from this job every 5 seconds.
+      scrape_interval: 5s
+
+      static_configs:
+        - targets: ['localhost:9009']
+
+    - job_name: "node"
+      static_configs:
+      - targets: ["node-exporter:9100"]
+
+    - job_name: "jmx"
+      static_configs:
+      - targets: ["products:8081"]
+
+    - job_name: 'web-shop'
+      scrape_interval: 5s
+
+      static_configs:
+        - targets: ['web-shop:6666']
+          labels:
+            group: 'shop'
+            service: 'web-shop'
+
+    - job_name: 'shopping-cart'
+      scrape_interval: 5s
+
+      static_configs:
+        - targets: ['shopping-cart:5555']
+          labels:
+            group: 'shop'
+            service: 'shopping-cart'
+
+    - job_name: 'products'
+      scrape_interval: 5s
+      metrics_path: /actuator/prometheus
+      static_configs:
+        - targets: ['products:8080']
+          labels:
+            group: 'shop'
+            service: 'products'
+  
+    - job_name: 'discounter'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['discounter:3036']
+          labels:
+            group: 'shop'
+            service: 'discounter'
+
+    - job_name: 'span-metrics'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['agent:1234']
+          labels:
+            group: 'shop'
+
+
+    - job_name: 'blackbox'
+      metrics_path: /probe
+      params:
+        module: [http_2xx]  # Look for a HTTP 200 response.
+      static_configs:
+        - targets:
+          - http://web-shop:6666/cart
+          - http://web-shop:6666/shop
+          - http://products:8080
+          - http://shopping-cart:5555/cart/blackbox
+          - https://example.com
+          - https://www.telegraph.co.uk
+      relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: blackbox_exporter:9115
+
+
+
+logs:
+  configs:
+  - name: loki
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+        external_labels:
+          job: agent
+  positions_directory: /tmp/positions
+
+traces:
+  configs:
+  - name: tempo
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+    remote_write:
+      - endpoint: tempo:4317
+        insecure: true
+    #service_graphs:
+    #    enabled: true
+    #spanmetrics:
+    #  dimensions:
+    #    - name: http.method
+    #    - name: http.target
+    #    - name: team.name
+    #  handler_endpoint: 0.0.0.0:1234
+    automatic_logging:
+      backend: logs_instance
+      logs_instance_name: loki
+      roots: true
+      processes: true
+      spans: true
+      span_attributes:
+        - http.method
+        - http.target
+        - http.status_code
+      overrides:
+        trace_id_key: "traceId"
