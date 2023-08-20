@@ -1,0 +1,92 @@
+version: "3.9"
+
+# Environment variables for Grafana OnCall (see at the bottom)
+x-environment: &oncall-environment
+  DATABASE_TYPE: sqlite3
+  BROKER_TYPE: redis
+  BASE_URL: http://oncall:8080
+  SECRET_KEY: my_random_secret_must_be_more_than_32_characters_long
+  FEATURE_SLACK_INTEGRATION_ENABLED: "True"
+  REDIS_URI: redis://redis:6379/0
+  DJANGO_SETTINGS_MODULE: settings.hobby
+  CELERY_WORKER_QUEUE: "default,critical,long,slack,telegram,webhook,retry,celery"
+  CELERY_WORKER_CONCURRENCY: "1"
+  CELERY_WORKER_MAX_TASKS_PER_CHILD: "100"
+  CELERY_WORKER_SHUTDOWN_INTERVAL: "65m"
+  CELERY_WORKER_BEAT_ENABLED: "True"
+  GRAFANA_API_URL: http://grafana:3000
+
+services:
+  grafana:
+    image: grafana/grafana:10.0.1
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=codely
+      - GF_INSTALL_PLUGINS=grafana-oncall-app
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=mail:1025
+    volumes:
+      - ./provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+
+  mysql:
+    image: mysql:8.0.33
+    environment:
+      MYSQL_DATABASE: employees
+      MYSQL_ROOT_PASSWORD: codely
+    volumes:
+      - ./mysql:/etc/mysql/conf.d
+      - mysql_data:/var/lib/mysql
+      - mysql_logs:/var/log/mysql/
+
+  loki:
+    image: grafana/loki:2.8.2
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    volumes:
+      - mysql_logs:/mysql_logs
+      - ./promtail/promtail.yml:/etc/promtail/promtail.yml
+    command: -config.file=/etc/promtail/promtail.yml
+
+  mail:
+    image: dockage/mailcatcher:0.8.2
+    ports:
+      - 1080:1080
+
+  # Grafana OnCall and its dependencies begins here
+  oncall:
+    image: grafana/oncall:v1.3.7
+    ports:
+      - 8080:8080
+    environment: *oncall-environment
+    volumes:
+      - oncall_data:/var/lib/oncall
+    command: >
+      sh -c "uwsgi --ini uwsgi.ini"
+    depends_on:
+      redis:
+        condition: service_healthy
+  celery:
+    image: grafana/oncall:v1.3.7
+    command: sh -c "./celery_with_exporter.sh"
+    environment: *oncall-environment
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7.0.5
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
+volumes:
+  grafana_data: { }
+  mysql_data: { }
+  mysql_logs: { }
+  oncall_data: { }

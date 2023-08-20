@@ -1,0 +1,30 @@
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: mysql_slow_queries
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          service: mysql
+          kind: slow_query_logs
+          __path__: /mysql_logs/slow.log
+    pipeline_stages:
+      - multiline:
+          firstline: '#\sTime:.*'
+      - regex:
+          expression: '#\s*Time:\s*(?P<timestamp>.*)\n#\s*User@Host:\s*(?P<user>[^\[]+).*@\s*(?P<ip>.*]).+?\n# Query_time:\s*(?P<duration>\d+\.\d+).+?Rows_sent:\s*(?P<rows_sent>\d+)\s*Rows_examined:\s*(?P<rows_examined>\d+)\s.+?Errno:\s*(?P<errno>\d+)\s*Killed:\s(?P<killed>\d+)\s*Bytes_received:\s(?P<bytes_rcv>\d+)\s*Bytes_sent:\s(?P<bytes_sent>\d+).+?Start:\s(?P<start_time>.*)\s*End:\s*(?P<end_time>.*).+?\n(?P<query>(?s:.*))$'
+      - labels:
+          timestamp:
+          user:
+          ip:
+          duration:
+          errno:
+          killed:
+          start_time:
+          end_time:
+          query:
+      - drop:
+          expression: "^ *$"
+          drop_counter_reason: "drop empty lines"

@@ -55,5 +55,11 @@ of some theoretical concepts and some just use an external instance, like [play.
 
    [5.3. 🎨 Personaliza las plantillas de las alertas](./5-grafana-alerts)
 
+6. 📟 Grafana OnCall
+
+   6.1. ☎️ Por qué utilizar Grafana OnCall para gestionar tus guardias
+
+   [6.2. 📞 Gestiona tus guardias utilizando Grafana OnCall](./6-grafana-oncall)
+
 *NOTE: Some of the examples present on this repository are attached as Git Submodules, so you can run
 `git submodule init` and `git submodule update` to clone the entire repository with them.*
