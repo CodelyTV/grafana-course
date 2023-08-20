@@ -1,0 +1,9 @@
+apiVersion: 1
+
+providers:
+  - name: 'MySQL dashboards'
+    type: file
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/mysql
+      foldersFromFilesStructure: false

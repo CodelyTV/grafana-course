@@ -39,5 +39,13 @@ of some theoretical concepts and some just use an external instance, like [play.
 
    [3.3. 🦬 Observabilidad para monitorear Prometheus](./3-fullstack-e2e-web-shop-o11y)
 
+4. 🐳 Métricas de negocio y plataforma utilizando SQL
+
+   [4.1. 🐋 Monitoriza datos SQL con Grafana](./4-monitor-your-sql-db)
+
+   [4.2. 👁️ Observa el estado de tu base de datos con Grafana](./4-monitor-your-sql-db)
+
+   [4.3. 🎩 Haz que una migración del legacy sea un éxito](./4-monitor-your-sql-db)
+
 *NOTE: Some of the examples present on this repository are attached as Git Submodules, so you can run
 `git submodule init` and `git submodule update` to clone the entire repository with them.*

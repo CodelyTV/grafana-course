@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  grafana:
+    image: grafana/grafana:10.0.1
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=codely
+      - GF_INSTALL_PLUGINS=grafana-oncall-app
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=mail:1025
+    volumes:
+      - ./provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+
+  mysql:
+    image: mysql:8.0.33
+    environment:
+      MYSQL_ROOT_PASSWORD: codely
+    volumes:
+      - ./test_db:/test_db
+      - ./mysql:/etc/mysql/conf.d
+      - mysql_data:/var/lib/mysql
+      - mysql_logs:/var/log/mysql/
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter:v0.15.0
+    volumes:
+      - ./mysqld-exporter:/etc/mysqld-exporter
+    environment:
+      - DATA_SOURCE_NAME=root:codely@(mysql:3306)/
+    command:
+      - --config.my-cnf=/etc/mysqld-exporter/my.cnf
+      - --collect.info_schema.processlist
+      - --collect.info_schema.innodb_metrics
+      - --collect.info_schema.tablestats
+      - --collect.info_schema.tables
+      - --collect.info_schema.userstats
+      - --collect.engine_innodb_status
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+
+  loki:
+    image: grafana/loki:2.8.2
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    volumes:
+      - mysql_logs:/mysql_logs
+      - ./promtail/promtail.yml:/etc/promtail/promtail.yml
+    command: -config.file=/etc/promtail/promtail.yml
+
+  mail:
+    image: dockage/mailcatcher:0.8.2
+    ports:
+      - 1080:1080
+
+volumes:
+  grafana_data: { }
+  mysql_data: { }
+  mysql_logs: { }
+  prometheus_data: { }
