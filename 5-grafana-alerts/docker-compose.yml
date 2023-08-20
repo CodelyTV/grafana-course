@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  grafana:
+    image: grafana/grafana:10.0.1
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=codely
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=mail:1025
+    volumes:
+      - ./provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+
+  mysql:
+    image: mysql:8.0.33
+    environment:
+      MYSQL_DATABASE: employees
+      MYSQL_ROOT_PASSWORD: codely
+    volumes:
+      - ./mysql:/etc/mysql/conf.d
+      - mysql_data:/var/lib/mysql
+      - mysql_logs:/var/log/mysql/
+
+  loki:
+    image: grafana/loki:2.8.2
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    volumes:
+      - mysql_logs:/mysql_logs
+      - ./promtail/promtail.yml:/etc/promtail/promtail.yml
+    command: -config.file=/etc/promtail/promtail.yml
+
+  mail:
+    image: dockage/mailcatcher:0.8.2
+    ports:
+      - 1080:1080
+
+volumes:
+  grafana_data: { }
+  mysql_data: { }
+  mysql_logs: { }

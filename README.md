@@ -47,5 +47,13 @@ of some theoretical concepts and some just use an external instance, like [play.
 
    [4.3. 🎩 Haz que una migración del legacy sea un éxito](./4-monitor-your-sql-db)
 
+5. 🚨 Configura alertas en Grafana
+
+   5.1. 🔔 Por qué centralizar las alertas en Grafana
+
+   [5.2. ⚙️ Configura tus alertas en Grafana](./5-grafana-alerts)
+
+   [5.3. 🎨 Personaliza las plantillas de las alertas](./5-grafana-alerts)
+
 *NOTE: Some of the examples present on this repository are attached as Git Submodules, so you can run
 `git submodule init` and `git submodule update` to clone the entire repository with them.*
