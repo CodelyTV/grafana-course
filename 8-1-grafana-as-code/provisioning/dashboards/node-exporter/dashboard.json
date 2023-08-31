@@ -1,0 +1,39 @@
+{
+   "description": "Dashboard for Node Exporter",
+   "panels": [
+      {
+         "datasource": {
+            "type": "datasource",
+            "uid": "-- Mixed --"
+         },
+         "fieldConfig": {
+            "defaults": {
+               "unit": "decbytes"
+            }
+         },
+         "gridPos": {
+            "h": 8,
+            "w": 24
+         },
+         "id": 1,
+         "targets": [
+            {
+               "datasource": {
+                  "type": "prometheus",
+                  "uid": "Prometheus"
+               },
+               "expr": "node_memory_MemTotal_bytes{instance=\"node-exporter:9100\"}"
+            }
+         ],
+         "title": "Total memory (GB)",
+         "type": "timeseries"
+      }
+   ],
+   "schemaVersion": 36,
+   "time": {
+      "from": "now-6h",
+      "to": "now"
+   },
+   "timezone": "utc",
+   "title": "Node Exporter"
+}

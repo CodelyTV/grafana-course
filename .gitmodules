@@ -7,3 +7,6 @@
 [submodule "6-grafana-oncall/oncall"]
 	path = 6-grafana-oncall/oncall
 	url = git@github.com:grafana/oncall.git
+[submodule "8-2-grafana-future/scenes"]
+	path = 8-2-grafana-future/scenes
+	url = git@github.com:grafana/scenes.git

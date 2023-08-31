@@ -61,5 +61,17 @@ of some theoretical concepts and some just use an external instance, like [play.
 
    [6.2. 📞 Gestiona tus guardias utilizando Grafana OnCall](./6-grafana-oncall)
 
+7. 🪧 Cómo diseñar el panel ideal
+
+   7.1. 🔝 Crea un dashboard perfecto en Grafana
+
+   7.2. 👓 Estrategias de observabilidad
+
+8. 🔮 El futuro de Grafana
+
+   [8.1. 🦄 El futuro de la Observabilidad es Grafana as Code](./8-1-grafana-as-code)
+
+   [8.2. 🪄 El futuro (ya presente) de Grafana](./8-2-grafana-future)
+
 *NOTE: Some of the examples present on this repository are attached as Git Submodules, so you can run
 `git submodule init` and `git submodule update` to clone the entire repository with them.*
